@@ -56,9 +56,9 @@ while True:
                 old_music = music_file
         i = time() - 2.0
     if (time() - i) > 1.5:
-        r = random.randrange(0,256)
-        g = random.randrange(0,256)
-        b = random.randrange(0,256)
+        r = random.randrange(128,256)
+        g = random.randrange(128,256)
+        b = random.randrange(128,256)
         screen.fill((r,g,b))
         i = time()
         for file in os.listdir(os.path.join("media",media_sub)):
