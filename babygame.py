@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import pygame, sys, os
 import random
 from pygame.locals import *
