@@ -1,0 +1,28 @@
+Author:
+Clay Berlo <clay.berlo@gmail.com>
+Release 0.2
+
+Description:
+A simple keyboard basher for young children
+
+Requirements:
+python, pygame, babygame-media (optional)
+
+How to run:
+Extract all files with subdirectories.  Under the babygame directory, there is the babygame.py file.  Run this file from this location and it will locate the media files (within the media subdirectory).
+
+Features:
+* Uses pygame to allow cross-platform compatibility
+* Allows simple customization by changing the media files in each directory
+* WAV support currently used for voice
+* MP3 support currently used for music
+* GIF format currently used for images
+* 0-9 numbers mapped, a-z, A-Z mapped
+* Says the name of each key pressed from the above range
+* Displays what key has been pressed during each MP3 playback
+* ESC key exits program
+
+Planned:
+* Customized set of music files and images
+* Support for OGG and MP3
+* Support for more image formats
