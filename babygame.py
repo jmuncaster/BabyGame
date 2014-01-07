@@ -65,7 +65,7 @@ def play_file(filename):
 def play_voice_file(keypress):
   "Play the voice file for the provided keypress"
   dirname = keypress
-  filename = "%s.wav" % keypress
+  filename = "%s.wav" % keypress.upper()
   voice_file = os.path.join("media", dirname, filename)
   print "voice_file = %s" % voice_file
   if os.path.exists(voice_file):
