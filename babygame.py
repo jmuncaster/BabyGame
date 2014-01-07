@@ -108,7 +108,7 @@ def random_color():
 
 
 def random_word():
-  words = ["LUCY", "BALL", "APPLE", "OUTSIDE", "UP"]
+  words = ["LUCY", "BALL", "APPLE", "OUTSIDE", "UP", "SHOES", "DIAPER"]
   return words[random.randrange(0, len(words))]
 
 
