@@ -5,28 +5,25 @@ from pygame.locals import *
 import pygame.mixer
 from time import time
 
-
 def initialize_screen(fullscreen=False):
   print "Initializing pygame"
   pygame.init()
-   
-  fullscreen = False
-    
+       
   if fullscreen:
-      depth = 0
-      flags = FULLSCREEN | HWSURFACE | DOUBLEBUF
+    depth = 0
+    flags = FULLSCREEN | HWSURFACE | DOUBLEBUF
   else:
-      depth = 16
-      flags = SWSURFACE | DOUBLEBUF
+    depth = 16
+    flags = SWSURFACE | DOUBLEBUF
   modes = pygame.display.list_modes(depth, flags)
 
   if fullscreen:
-      if modes == -1:  # Welcome to exceptionlessland
-          raise SystemExit("Failed to initialize display")
-      else:
-          mode = max(modes)
+    if modes == -1:  # Welcome to exceptionlessland
+      raise SystemExit("Failed to initialize display")
+    else:
+      mode = max(modes)
   else:
-      mode = (800, 600)
+    mode = (800, 600)
 
   pygame.display.set_mode(mode, flags, depth)
 
@@ -34,24 +31,8 @@ def initialize_screen(fullscreen=False):
   screen = pygame.display.get_surface()
   return screen
 
-
-screen = initialize_screen(False)
-
-x = 0
-y = 0
-i = time()
-keypress=""
-image_file_name = os.path.join("media","babygame.gif")
-music_file = ""
-voice_file = ""
-old_keypress = "none"
-old_voice = "none"
-old_music = "none"
-
-def input(events):
+def get_input(events):
   "Get the keypress from the user"
-  global keypress
-
   for event in events:
     if event.type == QUIT:
       pygame.mixer.music.stop()
@@ -66,55 +47,108 @@ def input(events):
         print "Event.key = " + str(event.key)
         keypress = chr(event.key)
         print "keypress = " + str(keypress)
+        return keypress
+  return None
 
-def locate_media(keypress):
+def play_voice_file(keypress):
+  "Play the voice file for the provided keypress"
   dirname = keypress
   filename = "%s.wav" % keypress
-  return os.path.join("media", dirname, filename)
-
-while True:
-  old_keypress = keypress
-
-  input(pygame.event.get())
-
-  if not os.path.exists(os.path.join("media",keypress)):
-    keypress = ""
-
-  if old_keypress != keypress:
-    voice_file = locate_media(keypress)
-    print "voice_file = %s" % voice_file
+  voice_file = os.path.join("media", dirname, filename)
+  print "voice_file = %s" % voice_file
+  if os.path.exists(voice_file):
     pygame.mixer.music.load(voice_file)
     pygame.mixer.music.play(0, 0.0)
-    old_voice = voice_file
-    i = time() - 2.0
 
-  if (time() - i) > 1.5:
-    r = random.randrange(128,256)
-    g = random.randrange(128,256)
-    b = random.randrange(128,256)
-    screen.fill((r,g,b))
-    i = time()
-    for file in os.listdir(os.path.join("media",keypress)):
-      if file.endswith(".gif"):
-        x = random.randrange(10,791)
-        y = random.randrange(10,591)
-        image_file_name = os.path.join("media",keypress,file)
-        image_surface = pygame.image.load(image_file_name)
-        if x + image_surface.get_width() > 800:
-          x = 800 - x
-        if y + image_surface.get_height() > 600:
-          y = 600 - y
-        screen.blit(image_surface, (x,y))
+def get_image(keypress):
+  "Get image for the keypress, or None if not available"
+  if not keypress: return None
 
-  # Render
-  font = pygame.font.SysFont("Arial Black", 165)
+  media_dir = os.path.join("media",keypress)
+  if not os.path.exists(media_dir): return None
+
+  extensions = set([".gif", ".png", ".jpg", ".jpeg"])
+
+  for filename in os.listdir(media_dir):
+    root, ext = os.path.splitext(filename)
+    if ext in extensions:
+      image_file_name = os.path.join("media", keypress, filename)
+      image = pygame.image.load(image_file_name)
+      return image
+
+  return None      
+
+
+def random_color():
+  "Get a random color"
+  r = random.randrange(128,256)
+  g = random.randrange(128,256)
+  b = random.randrange(128,256)
+  return (r,g,b)
+
+
+
+def main(fullscreen=False):
+
+  # Initialization
+  screen = initialize_screen(fullscreen)
+
+  keypress = None
+  last_keypress = None
+  last_update_time = time()
+  image = None
+  update = True
+  update_period = .75
+
+  # Main program loop
+  while True:
+    keypress = get_input(pygame.event.get())
+
+    if keypress and not os.path.exists(os.path.join("media",keypress)):
+      keypress = None
+
+    if keypress and last_keypress != keypress:
+      play_voice_file(keypress)
+      image = get_image(keypress)
+      update = True
+      last_keypress = keypress
+
+    update = update or time() - last_update_time > update_period
+
+    if update:
+      update = False
+      last_update_time = time()
+
+      screen.fill(random_color())
+
+      if image and screen.get_rect().contains(image.get_rect()):
+        x = random.randrange(0, screen.get_width() - image.get_width())
+        y = random.randrange(0, screen.get_height() - image.get_height())
+        screen.blit(image, (x,y))
+
+    # Render
+    if last_keypress:
+      font = pygame.font.SysFont("Arial Black", 265)
+      
+      antialias = True
+      text_color = (0, 0, 0)
+      text = font.render(last_keypress.upper(), antialias, text_color)
+
+      textpos = text.get_rect(
+        centerx=screen.get_width() / 2,
+        centery=screen.get_height() / 2)
+
+      screen.blit(text, textpos)
+
+    pygame.display.flip()
+
+
+if __name__ == "__main__":
   
-  text_color = (0, 0, 0)
-  #text = font.render(keypress.upper(), 1, text_color)
-  antialias = True
-  text = font.render(keypress.upper(), antialias, text_color)
+  fullscreen = False
+  
+  for arg in sys.argv:
+    if arg == "-f" or arg == "--fullscreen":
+      fullscreen = True
 
-  textpos = text.get_rect(centerx=screen.get_width()/2
-                          ,centery=screen.get_height()/2)
-  screen.blit(text, textpos)
-  pygame.display.flip()
+  main(fullscreen)
