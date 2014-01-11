@@ -1,0 +1,12 @@
+cp apple.jpg /Users/jmuncaster/Source/BabyGame/media/a
+cp ball.jpg /Users/jmuncaster/Source/BabyGame/media/b
+cp car.png /Users/jmuncaster/Source/BabyGame/media/c
+cp cmd.sh /Users/jmuncaster/Source/BabyGame/media/c
+cp dog.jpg /Users/jmuncaster/Source/BabyGame/media/d
+cp elmo.jpg /Users/jmuncaster/Source/BabyGame/media/e
+cp guitar.jpg /Users/jmuncaster/Source/BabyGame/media/g
+cp hat.jpg /Users/jmuncaster/Source/BabyGame/media/h
+cp ice-cream.jpg /Users/jmuncaster/Source/BabyGame/media/i
+cp jacket.jpg /Users/jmuncaster/Source/BabyGame/media/j
+cp keyboard.jpg /Users/jmuncaster/Source/BabyGame/media/k
+cp lion.png /Users/jmuncaster/Source/BabyGame/media/l
