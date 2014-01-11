@@ -94,6 +94,13 @@ def get_image(keypress):
     if ext in extensions:
       image_file_name = os.path.join("media", keypress, filename)
       image = pygame.image.load(image_file_name)
+      width = image.get_width()
+      height = image.get_height()
+      desired_height = 256
+      scale = 1.0 * desired_height / height
+      new_width = int(scale * width)
+      new_height = int(scale * height)
+      image = pygame.transform.smoothscale(image, (new_width, new_height))
       return image
 
   return None      
