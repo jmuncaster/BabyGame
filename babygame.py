@@ -65,7 +65,7 @@ def play_file(filename):
 def play_voice_file(keypress):
   "Play the voice file for the provided keypress"
   dirname = keypress
-  filename = "%s.wav" % keypress
+  filename = "%s.wav" % keypress.upper()
   voice_file = os.path.join("media", dirname, filename)
   print "voice_file = %s" % voice_file
   if os.path.exists(voice_file):
@@ -115,7 +115,7 @@ def random_color():
 
 
 def random_word():
-  words = ["LUCY", "BALL", "APPLE", "OUTSIDE", "UP"]
+  words = ["LUCY", "BALL", "APPLE", "OUTSIDE", "UP", "SHOES", "DIAPER"]
   return words[random.randrange(0, len(words))]
 
 
@@ -190,11 +190,12 @@ def main(argv=[]):
 
     # Text options
     antialias = True
+    
+    word_font = pygame.font.SysFont("Arial Black", 120)
 
     if letters_found > 0:
       completed_word_color = (0, 192, 0)
-      completed_word_font = pygame.font.SysFont("Arial Black", 60)
-      completed_word_text = completed_word_font.render(last_word[:letters_found], antialias, completed_word_color)
+      completed_word_text = word_font.render(last_word[:letters_found], antialias, completed_word_color)
       completed_word_pos  = completed_word_text.get_rect(x=10, y=0)
       screen.blit(completed_word_text, completed_word_pos)
       cursor_x = completed_word_pos.x + completed_word_text.get_width()
@@ -205,8 +206,7 @@ def main(argv=[]):
 
     if letters_found < len(last_word):
       current_letter_color = (255, 255, 255)
-      current_letter_font = pygame.font.SysFont("Arial Black", 60)
-      current_letter_text = current_letter_font.render(
+      current_letter_text = word_font.render(
         last_word[letters_found],
         antialias,
         current_letter_color)
@@ -216,7 +216,6 @@ def main(argv=[]):
       cursor_y = current_letter_pos.y      
 
     word_color = (32, 32, 32)
-    word_font = pygame.font.SysFont("Arial Black", 60)
     word_text = word_font.render(last_word[letters_found+1:], antialias, word_color)
     word_pos  = word_text.get_rect(x=cursor_x, y=cursor_y)
     screen.blit(word_text, word_pos)
