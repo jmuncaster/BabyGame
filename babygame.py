@@ -108,9 +108,9 @@ def get_image(keypress):
 
 def random_color():
   "Get a random color"
-  r = random.randrange(128,192)
-  g = random.randrange(128,192)
-  b = random.randrange(128,192)
+  r = random.randrange(128,256)
+  g = random.randrange(128,256)
+  b = random.randrange(128,256)
   return (r,g,b)
 
 
@@ -137,7 +137,7 @@ def main(argv=[]):
   last_update_time = time()
   image = None
   refresh = True
-  update_period = .75
+  update_period = 1.5 
   last_word = random_word()
   remaining_word = last_word
   letters_found = 0
@@ -153,6 +153,7 @@ def main(argv=[]):
       image = get_image(keypress)
       refresh = True
       last_keypress = keypress
+      last_keypress_time = time()
       if remaining_word and keypress.upper() == remaining_word[0].upper():
         letters_found += 1
         remaining_word = last_word[letters_found:]
@@ -194,7 +195,7 @@ def main(argv=[]):
     word_font = pygame.font.SysFont("Arial Black", 120)
 
     if letters_found > 0:
-      completed_word_color = (0, 192, 0)
+      completed_word_color = (64, 212, 64)
       completed_word_text = word_font.render(last_word[:letters_found], antialias, completed_word_color)
       completed_word_pos  = completed_word_text.get_rect(x=10, y=0)
       screen.blit(completed_word_text, completed_word_pos)
@@ -205,7 +206,7 @@ def main(argv=[]):
       cursor_y = 0
 
     if letters_found < len(last_word):
-      current_letter_color = (255, 255, 255)
+      current_letter_color = (0, 255, 255)
       current_letter_text = word_font.render(
         last_word[letters_found],
         antialias,
@@ -222,12 +223,15 @@ def main(argv=[]):
 
     if last_keypress:
       letter_color = (0, 0, 0)
-      letter_font = pygame.font.SysFont("Arial Black", 265)      
+      letter_font = pygame.font.SysFont("Arial Black", 300)      
       letter_text = letter_font.render(last_keypress.upper(), antialias, letter_color)
       letter_pos  = letter_text.get_rect(
         centerx=screen.get_width() / 2,
         centery=screen.get_height() / 2)
       screen.blit(letter_text, letter_pos)
+
+      if time() - last_keypress_time > 3:
+        last_keypress = None
 
     pygame.display.flip()
 
