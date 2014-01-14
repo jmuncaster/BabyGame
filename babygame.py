@@ -236,8 +236,8 @@ def main(argv=[]):
         centery=screen.get_height() / 2)
       screen.blit(letter_text, letter_pos)
 
-      if time() - last_keypress_time > 3:
-        last_keypress = None
+      #if time() - last_keypress_time > 3:
+      #  last_keypress = None
 
     pygame.display.flip()
 
