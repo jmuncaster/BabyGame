@@ -92,6 +92,7 @@ def get_image(keypress):
   for filename in os.listdir(media_dir):
     root, ext = os.path.splitext(filename)
     if ext in extensions:
+      word = filename.split(".")[0].upper()
       image_file_name = os.path.join("media", keypress, filename)
       image = pygame.image.load(image_file_name)
       width = image.get_width()
@@ -101,9 +102,9 @@ def get_image(keypress):
       new_width = int(scale * width)
       new_height = int(scale * height)
       image = pygame.transform.smoothscale(image, (new_width, new_height))
-      return image
+      return image, word
 
-  return None      
+  return None, ""
 
 
 def random_color():
@@ -138,11 +139,12 @@ def main(argv=[]):
   image = None
   refresh = True
   update_period = .75
-  last_word = random_word()
+  last_word = ""
   remaining_word = last_word
   letters_found = 0
   new_word_queued = False
   word_completed_time = time()
+  current_letter_word = ""
 
   # Main program loop
   while True:
@@ -150,22 +152,27 @@ def main(argv=[]):
 
     if keypress:
       play_voice_file(keypress)
-      image = get_image(keypress)
+      image, word = get_image(keypress)
       refresh = True
       last_keypress = keypress
-      if remaining_word and keypress.upper() == remaining_word[0].upper():
-        letters_found += 1
-        remaining_word = last_word[letters_found:]
+      #if remaining_word and keypress.upper() == remaining_word[0].upper():
+      #  letters_found += 1
+      #  remaining_word = last_word[letters_found:]
+      print "Getting new word"
+      last_word = word
+      letters_found = 0
+      remaining_word = last_word
+      new_word_queued = False
 
     if refresh or time() - last_update_time > update_period:
       refresh = False
       last_update_time = time()
 
-      if not remaining_word and not new_word_queued:
-        print "Completed word!!!"
-        word_completed_time = time()
-        new_word_queued = True
-        play_clap_file()
+      #if not remaining_word and not new_word_queued:
+      #  print "Completed word!!!"
+      #  word_completed_time = time()
+      #  new_word_queued = True
+      #  play_clap_file()
 
       # Switch fill color and move sprites
       background_color = random_color()
@@ -174,12 +181,12 @@ def main(argv=[]):
         x = random.randrange(0, screen.get_width() - image.get_width())
         y = random.randrange(0, screen.get_height() - image.get_height())
 
-    if new_word_queued and time() - word_completed_time > 1:
-      print "Getting new word"
-      last_word = random_word()
-      letters_found = 0
-      remaining_word = last_word
-      new_word_queued = False
+    #if new_word_queued and time() - word_completed_time > 1:
+    #  print "Getting new word"
+    #  last_word = random_word()
+    #  letters_found = 0
+    #  remaining_word = last_word
+    #  new_word_queued = False
 
     # Render
     screen.fill(background_color)
